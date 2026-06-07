@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於 — WebTuning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617; --bg-panel: #0f172a; --bg-card: #111827;
+            --border: #1e293b; --border-hover: #334155;
+            --text-main: #f8fafc; --text-sub: #94a3b8; --text-muted: #64748b;
+            --accent: #ef4444; --accent-dim: #dc2626; --blue: #3b82f6; --green: #10b981;
+            --header-bg: rgba(2,6,23,0.85); --header-border: rgba(30,41,59,0.6);
+            --card-bg: rgba(15,23,42,0.7); --card-border: #1e293b;
+        }
+        body.light {
+            --bg-deep: #f8fafc; --bg-panel: #ffffff; --bg-card: #f1f5f9;
+            --border: #e2e8f0; --border-hover: #cbd5e1;
+            --text-main: #0f172a; --text-sub: #475569; --text-muted: #64748b;
+            --accent: #dc2626; --accent-dim: #b91c1c; --blue: #2563eb; --green: #059669;
+            --header-bg: rgba(255,255,255,0.85); --header-border: rgba(226,232,240,0.8);
+            --card-bg: rgba(255,255,255,0.85); --card-border: #e2e8f0;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg-deep); color: var(--text-main);
+            font-family: 'Fira Sans','Noto Sans TC',sans-serif;
+            min-height: 100vh; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.3s, color 0.3s;
+        }
+        .bg-oled {
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(239,68,68,0.05), transparent 60%),
+                        radial-gradient(ellipse 60% 30% at 80% 90%, rgba(59,130,246,0.03), transparent 50%),
+                        var(--bg-deep);
+            transition: background 0.3s;
+        }
+        body.light .bg-oled {
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(239,68,68,0.02), transparent 60%),
+                        radial-gradient(ellipse 60% 30% at 80% 90%, rgba(59,130,246,0.01), transparent 50%),
+                        var(--bg-deep);
+        }
+        .header-bar { background: var(--header-bg); border-bottom: 1px solid var(--header-border); }
+        .text-heading { color: var(--text-main); }
+        .text-body    { color: var(--text-sub); }
+        .text-meta    { color: var(--text-muted); }
+        .bg-card      { background: var(--card-bg); }
+        .border-card  { border-color: var(--card-border); }
+        .logo-text    { color: var(--text-main); }
+        .font-mono { font-family: 'Fira Code','JetBrains Mono',monospace; }
+        .font-tc   { font-family: 'Noto Sans TC','Fira Sans',sans-serif; }
+
+        ::-webkit-scrollbar { width:8px; height:8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+        *:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+        }
+        body.light #themeToggle { border-color:#cbd5e1; color:#475569; }
+        body.light #themeToggle:hover { border-color:#94a3b8; color:#0f172a; }
+    </style>
+</head>
+<body class="bg-oled">
+
+<div class="relative z-10 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-30 backdrop-blur-xl header-bar">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group cursor-pointer no-underline" aria-label="WebTuning 首頁">
+                <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center font-black text-white italic text-lg shadow-lg shadow-red-600/20 transition-shadow group-hover:shadow-red-600/40" aria-hidden="true">Pro</div>
+                <span class="text-lg font-bold tracking-tight logo-text">Web<span class="text-red-500">Tuning</span></span>
+            </a>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="index.html" class="text-meta hover:text-heading transition-colors duration-200 font-mono text-xs no-underline">← 回首頁</a>
+                <span class="w-px h-5 bg-slate-700 hidden sm:block"></span>
+                <button id="themeToggle" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-700 text-sm font-medium text-slate-300 hover:border-slate-500 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent" aria-label="切換深淺主題">
+                    <svg id="themeIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <span id="themeLabel">淺色</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-20">
+        <h1 class="text-3xl sm:text-4xl font-black text-heading mb-4">關於 <span class="text-red-500">WebTuning</span></h1>
+        <p class="text-body text-base leading-relaxed mb-10 font-tc">
+            WebTuning 是一套專為 ECU 調校工程師設計的網頁版分析工具套件。
+            無需安裝、打開瀏覽器即可使用，所有數據處理皆在本地端完成，確保您的調校數據安全不外流。
+        </p>
+
+        <!-- Tools -->
+        <div class="space-y-8 mb-12">
+            <div class="bg-card border border-card rounded-2xl p-6 sm:p-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-red-600/10 border border-red-600/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-heading">Tuning Analyzer</h2>
+                </div>
+                <p class="text-body text-sm leading-relaxed mb-3 font-tc">
+                    3D 立體曲面圖表比對引擎。支援燃油 (VM) 與點火 (SA) 雙模式分析、
+                    Map A/B 快速貼上比對、誤差分析 (Delta) 以及可拖曳四象限版面。
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Plotly 3D</span>
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Vue 3</span>
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">VM / SA</span>
+                </div>
+            </div>
+
+            <div class="bg-card border border-card rounded-2xl p-6 sm:p-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-blue-600/10 border border-blue-600/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 14s1.5-5 4.5-5S10.5 18 13.5 18S18 5 21 5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 14s1.5 5 4.5 5S10.5 8 13.5 8S18 21 21 21"/></svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-heading">Log Viewer</h2>
+                </div>
+                <p class="text-body text-sm leading-relaxed mb-3 font-tc">
+                    多通道 Log 波形分析器。拖曳上傳即時解析、最多 8 通道同步檢視、
+                    智慧 P-Code 故障碼偵測、全通道縮放連動與手機適配響應式設計。
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Plotly</span>
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Multi-Channel</span>
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">P-Code</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <h2 class="text-2xl font-bold text-heading mb-4">技術棧</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
+            <div class="bg-card border border-card rounded-xl p-4 text-center">
+                <div class="text-sm font-bold text-heading font-mono">Plotly.js</div>
+                <div class="text-xs text-meta mt-1">3D / 2D 圖表</div>
+            </div>
+            <div class="bg-card border border-card rounded-xl p-4 text-center">
+                <div class="text-sm font-bold text-heading font-mono">Vue 3</div>
+                <div class="text-xs text-meta mt-1">響應式框架</div>
+            </div>
+            <div class="bg-card border border-card rounded-xl p-4 text-center">
+                <div class="text-sm font-bold text-heading font-mono">Tailwind CSS</div>
+                <div class="text-xs text-meta mt-1">Utility 樣式</div>
+            </div>
+            <div class="bg-card border border-card rounded-xl p-4 text-center">
+                <div class="text-sm font-bold text-heading font-mono">Vanilla JS</div>
+                <div class="text-xs text-meta mt-1">零依賴核心</div>
+            </div>
+        </div>
+
+        <!-- Back link -->
+        <a href="index.html" class="inline-flex items-center gap-2 text-red-500 font-semibold text-sm hover:gap-3 transition-all duration-200 no-underline">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+            返回首頁
+        </a>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 mt-auto border-t border-slate-800/50">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-meta font-mono">
+            <span>&copy; 2026 WebTuning Suite</span>
+            <span>Made for racers, by racers</span>
+        </div>
+    </footer>
+</div>
+
+<script>
+(function() {
+    const btn = document.getElementById('themeToggle');
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    const sun = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    const moon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    if (localStorage.getItem('webtuning-theme') === 'light') document.body.classList.add('light');
+    function updateUI() {
+        var isLight = document.body.classList.contains('light');
+        icon.innerHTML = isLight ? moon : sun;
+        label.textContent = isLight ? '深色' : '淺色';
+    }
+    updateUI();
+    btn.addEventListener('click', function() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('webtuning-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        updateUI();
+    });
+})();
+</script>
+</body>
+</html>
