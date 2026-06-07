@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aRacer WebTuning — 專業 ECU 調校分析套件</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /*
+         * aRacer WebTuning — Design System
+         * Style: Dark Mode OLED ✦ Palette: Midnight Slate + Racing Red
+         * Fonts: Fira Sans / Fira Code (UI) + Noto Sans TC (CJK fallback)
+         */
+
+        :root {
+            --bg-deep:    #020617;
+            --bg-panel:   #0f172a;
+            --bg-card:    #111827;
+            --border:     #1e293b;
+            --border-hover: #334155;
+            --text-main:  #f8fafc;
+            --text-sub:   #94a3b8;
+            --text-muted: #64748b;
+            --accent:     #ef4444;
+            --accent-dim: #dc2626;
+            --blue:       #3b82f6;
+            --green:      #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Fira Sans', 'Noto Sans TC', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── OLED Deep-space Background ── */
+        .bg-oled {
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(239, 68, 68, 0.06), transparent 60%),
+                radial-gradient(ellipse 60% 30% at 80% 90%, rgba(59, 130, 246, 0.04), transparent 50%),
+                var(--bg-deep);
+        }
+
+        /* Subtle grid mesh */
+        .bg-mesh {
+            background-image:
+                linear-gradient(rgba(51, 65, 85, 0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(51, 65, 85, 0.12) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black 30%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black 30%, transparent 70%);
+        }
+
+        /* ── Card Glow Effect ── */
+        .card-glow {
+            position: relative;
+            transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(700px circle at var(--mx, 50%) var(--my, 50%), rgba(239, 68, 68, 0.07), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .card-glow:hover::before { opacity: 1; }
+        .card-glow:hover { transform: translateY(-2px); }
+        .card-glow > * { position: relative; z-index: 1; }
+
+        /* Card 2 uses blue glow */
+        .card-glow-blue::before {
+            background: radial-gradient(700px circle at var(--mx, 50%) var(--my, 50%), rgba(59, 130, 246, 0.07), transparent 40%);
+        }
+
+        /* ── Section Divider ── */
+        .divider-glow {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.35), transparent 50%, rgba(59, 130, 246, 0.25), transparent);
+        }
+
+        /* ── Typography ── */
+        .font-mono { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+        .font-tc   { font-family: 'Noto Sans TC', 'Fira Sans', sans-serif; }
+
+        .heading-xl {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+        /* ── Focus (Accessibility) ── */
+        *:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 6px;
+        }
+
+        /* ── Reduced Motion ── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .card-glow:hover { transform: none; }
+        }
+
+        /* ── Live Pulse Indicator ── */
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.35; transform: scale(0.75); }
+        }
+        .pulse-dot { animation: pulse-dot 2.2s ease-in-out infinite; }
+
+        /* ── Float animation (subtle, decorative only) ── */
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-6px); }
+        }
+
+        /* ── Loading skeleton shimmer (if needed for future dynamic content) ── */
+        @keyframes shimmer {
+            0%   { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-oled">
+
+    <!-- ═══════════ Mesh Background Overlay ═══════════ -->
+    <div class="bg-mesh fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- ═══════════ Main Layout ═══════════ -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- ── Header ── -->
+        <header class="sticky top-0 z-30 border-b border-slate-800/60 bg-slate-950/85 backdrop-blur-xl">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3 group cursor-pointer no-underline" aria-label="aRacer WebTuning 首頁">
+                    <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center font-black text-white italic text-lg shadow-lg shadow-red-600/20 transition-shadow group-hover:shadow-red-600/40" aria-hidden="true">
+                        aR
+                    </div>
+                    <span class="text-lg font-bold tracking-tight text-white">
+                        aRacer <span class="text-red-500">WebTuning</span>
+                    </span>
+                </a>
+
+                <!-- Meta -->
+                <div class="flex items-center gap-4 text-sm">
+                    <span class="text-slate-500 hidden sm:inline font-mono text-xs tracking-wide">ECU TUNING SUITE</span>
+                    <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
+                    <span class="flex items-center gap-1.5 text-emerald-400 text-xs font-mono">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot" aria-hidden="true"></span>
+                        v2.0
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── Hero Section ── -->
+        <section class="relative z-10 pt-20 pb-10 sm:pt-28 sm:pb-14 md:pt-36 md:pb-16">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8">
+
+                <!-- Badge -->
+                <div class="flex justify-center mb-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-red-600/10 border border-red-600/20 rounded-full text-xs font-semibold text-red-400 font-mono tracking-wider uppercase">
+                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full pulse-dot" aria-hidden="true"></span>
+                        Professional Grade
+                    </div>
+                </div>
+
+                <!-- Heading -->
+                <div class="text-center mb-8 sm:mb-10">
+                    <h1 class="heading-xl text-white mb-4">
+                        <span class="block">精準調校</span>
+                        <span class="block text-red-500">釋放極限性能</span>
+                    </h1>
+                    <p class="text-slate-400 max-w-lg mx-auto text-base sm:text-lg leading-relaxed font-tc">
+                        專業 ECU 圖表比對與 Log 數據分析工具。
+                        由賽道數據驅動，為競技而生。
+                    </p>
+                </div>
+
+                <!-- Divider -->
+                <div class="divider-glow max-w-xs mx-auto mb-12 sm:mb-16"></div>
+
+                <!-- ═══ Tool Cards ═══ -->
+                <div class="grid md:grid-cols-2 gap-5 sm:gap-6 max-w-4xl mx-auto">
+
+                    <!-- Card A: Tuning Analyzer (Red theme) -->
+                    <a href="aRacer_dualMap_analyzer.html"
+                       class="card-glow block group bg-slate-900/70 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-sm hover:border-red-600/30 focus-visible:border-red-600/30 cursor-pointer no-underline text-inherit"
+                       aria-label="開啟 Tuning Analyzer — 3D ECU 圖表比對與誤差分析工具"
+                       title="Tuning Analyzer — 3D ECU 圖表比對">
+
+                        <!-- Icon -->
+                        <div class="w-12 h-12 bg-red-600/10 border border-red-600/20 rounded-xl flex items-center justify-center mb-5 group-hover:bg-red-600/20 group-hover:border-red-600/40 transition-colors duration-300" aria-hidden="true">
+                            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                            </svg>
+                        </div>
+
+                        <h2 class="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-red-400 transition-colors duration-300">
+                            Tuning Analyzer
+                        </h2>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-5 font-tc">
+                            3D 立體曲面圖表比對引擎。燃油 (VM) 與點火 (SA) 雙模式分析，
+                            即時 Delta 誤差計算、Map A/B 快速貼上比對、可拖曳四象限版面配置。
+                        </p>
+
+                        <!-- Feature Tags -->
+                        <div class="flex flex-wrap gap-2 mb-5">
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">3D Surface</span>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">VM / SA</span>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Delta 誤差</span>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Plotly</span>
+                        </div>
+
+                        <!-- CTA -->
+                        <div class="flex items-center gap-2 text-red-500 font-semibold text-sm group-hover:gap-3 transition-all duration-200">
+                            <span>開啟工具</span>
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <!-- Card B: Log Viewer (Blue theme) -->
+                    <a href="aRacer_logViewer.html"
+                       class="card-glow card-glow-blue block group bg-slate-900/70 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-sm hover:border-blue-600/30 focus-visible:border-blue-600/30 cursor-pointer no-underline text-inherit"
+                       aria-label="開啟 Log Viewer — 多通道波形分析與故障碼偵測工具"
+                       title="Log Viewer — 多通道 Log 波形分析">
+
+                        <!-- Icon -->
+                        <div class="w-12 h-12 bg-blue-600/10 border border-blue-600/20 rounded-xl flex items-center justify-center mb-5 group-hover:bg-blue-600/20 group-hover:border-blue-600/40 transition-colors duration-300" aria-hidden="true">
+                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 14s1.5-5 4.5-5S10.5 18 13.5 18S18 5 21 5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 14s1.5 5 4.5 5S10.5 8 13.5 8S18 21 21 21" />
+                            </svg>
+                        </div>
+
+                        <h2 class="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">
+                            Log Viewer
+                        </h2>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-5 font-tc">
+                            多通道 Log 波形分析器。拖曳上傳即時解析、最多 8 通道同步檢視、
+                            智慧 P-Code 故障碼偵測、全通道縮放連動與手機適配響應式設計。
+                        </p>
+
+                        <!-- Feature Tags -->
+                        <div class="flex flex-wrap gap-2 mb-5">
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Multi-Channel</span>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">P-Code 偵測</span>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Drag &amp; Drop</span>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50 font-mono">Plotly</span>
+                        </div>
+
+                        <!-- CTA -->
+                        <div class="flex items-center gap-2 text-blue-500 font-semibold text-sm group-hover:gap-3 transition-all duration-200">
+                            <span>開啟工具</span>
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- ═══ Quick Stats ═══ -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto mt-14 sm:mt-16">
+                    <div class="text-center p-4 rounded-xl bg-slate-900/40 border border-slate-800/50">
+                        <div class="text-2xl font-black text-white font-mono">2</div>
+                        <div class="text-xs text-slate-500 mt-1 font-tc">分析工具</div>
+                    </div>
+                    <div class="text-center p-4 rounded-xl bg-slate-900/40 border border-slate-800/50">
+                        <div class="text-2xl font-black text-white font-mono">3D</div>
+                        <div class="text-xs text-slate-500 mt-1 font-tc">立體圖表</div>
+                    </div>
+                    <div class="text-center p-4 rounded-xl bg-slate-900/40 border border-slate-800/50">
+                        <div class="text-2xl font-black text-white font-mono">8</div>
+                        <div class="text-xs text-slate-500 mt-1 font-tc">通道同步</div>
+                    </div>
+                    <div class="text-center p-4 rounded-xl bg-slate-900/40 border border-slate-800/50">
+                        <div class="text-2xl font-black text-emerald-400 font-mono">24/7</div>
+                        <div class="text-xs text-slate-500 mt-1 font-tc">本地運行</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Footer ── -->
+        <footer class="relative z-10 mt-auto border-t border-slate-800/50">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-mono">
+                <span>&copy; 2026 aRacer WebTuning Suite</span>
+                <div class="flex items-center gap-3">
+                    <span>Made for racers, by racers</span>
+                    <span class="w-px h-3 bg-slate-700 hidden sm:block"></span>
+                    <span class="hidden sm:inline">ECU Tuning Tools</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ═══════════ Scripts ═══════════ -->
+    <script>
+        // ── Card Mouse-Tracked Glow ──
+        document.querySelectorAll('.card-glow, .card-glow-blue').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+                card.style.setProperty('--my', `${((e.clientY - rect.top) / rect.height) * 100}%`);
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.setProperty('--mx', '50%');
+                card.style.setProperty('--my', '50%');
+            });
+        });
+
+        // ── Keyboard: Enter key activates link on focused cards ──
+        document.querySelectorAll('a.card-glow, a.card-glow-blue').forEach(link => {
+            link.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    link.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
